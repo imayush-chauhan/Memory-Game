@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +7,12 @@ import 'package:memory/data/data.dart';
 import 'package:memory/screen/challenges.dart';
 import 'package:memory/screen/high%20score.dart';
 import 'package:memory/screen/memoryGame.dart';
+import 'package:memory/screen/setting.dart';
+import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'help.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -18,7 +20,9 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+AudioPlayer audioPlayer = AudioPlayer();
+
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final fireStore = Firebase.initializeApp();
@@ -26,41 +30,103 @@ class _HomeScreenState extends State<HomeScreen> {
   bool change = false;
   Timer timer;
 
+  bool newGame = false;
+  bool challenges = false;
+  bool highScore = false;
+
   @override
   void initState() {
     super.initState();
     getHighScore();
-    timer = Timer.periodic(Duration(
-        milliseconds: 2500), (timer) {
+    WidgetsBinding.instance.addObserver(this);
+    musicName();
+    timer = Timer.periodic(
+        Duration(
+        milliseconds: 2700), (timer) {
       setState(() {
+        if(Data.play == true){
+          playAgain();
+        }
         change = !change;
       });
     });
   }
 
+  musicName() async{
+    fireStore.then((value) async {
+      FirebaseFirestore.instance.
+      collection("memory").doc("1")
+          .get().then((result){
+        Data.music = result.get("music");
+      });
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state){
+    super.didChangeAppLifecycleState(state);
+    switch(state){
+      case AppLifecycleState.paused :
+        setState(() {
+          audioPlayer.pause();
+          Data.play = false;
+        });
+        break;
+      case AppLifecycleState.resumed :
+        setState(() {
+          audioPlayer.resume();
+          Data.play = true;
+        });
+        break;
+      case AppLifecycleState.inactive :
+        setState(() {
+          audioPlayer.pause();
+          Data.play = false;
+        });
+        break;
+      case AppLifecycleState.detached :
+        setState(() {
+          audioPlayer.pause();
+          Data.play = false;
+        });
+        break;
+    }
+  }
+
+  playAgain() async{
+    await audioPlayer.play(Data.music == "" ?
+    "https://firebasestorage.googleapis.com/v0/b/memory-game-3236c.appspot.com/o/ES_Gentle%20Melody%20-%20Megan%20Wofford.mp3?alt=media&token=987b1275-673c-4cb2-9919-ec088b2c662a":
+    Data.music);
+  }
+
   getHighScore() async {
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
 
-      if(myPrefs.getInt("hp") != null && myPrefs.getInt("tp") != null) {
-        setState(() {
-          Data.highScoreInPokemon = myPrefs.getInt("hp");
-          Data.timeInPokemon = myPrefs.getInt("tp");
-        });
-      }
+    if(myPrefs.getInt("hp") != null && myPrefs.getInt("tp") != null) {
+      setState(() {
+        Data.highScoreInPokemon = myPrefs.getInt("hp");
+        Data.timeInPokemon = myPrefs.getInt("tp");
+      });
+    }
 
-      if(myPrefs.getInt("he") != null && myPrefs.getInt("te") != null) {
-        setState(() {
-          Data.highScoreInEmoji = myPrefs.getInt("he");
-          Data.timeInEmoji = myPrefs.getInt("te");
-        });
-      }
+    if(myPrefs.getInt("he") != null && myPrefs.getInt("te") != null) {
+      setState(() {
+        Data.highScoreInEmoji = myPrefs.getInt("he");
+        Data.timeInEmoji = myPrefs.getInt("te");
+      });
+    }
 
-      if(myPrefs.getInt("hn") != null && myPrefs.getInt("tn") != null) {
-        setState(() {
-          Data.highScoreInNumber = myPrefs.getInt("hn");
-          Data.timeInNumber = myPrefs.getInt("tn");
-        });
+    if(myPrefs.getInt("hn") != null && myPrefs.getInt("tn") != null) {
+      setState(() {
+        Data.highScoreInNumber = myPrefs.getInt("hn");
+        Data.timeInNumber = myPrefs.getInt("tn");
+      });
+    }
 
+    if(myPrefs.getBool("play") != null) {
+      setState(() {
+        Data.play = myPrefs.getBool("play");
+      });
     }
   }
 
@@ -84,8 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
         FirebaseFirestore.instance.
         collection("memory").doc("1")
             .get().then((result){
-              // print(result.data());
-          Share.text('Notes', result.get("share"), 'text/plain');
+          Share.share(result.get("share"));
         });
       });
     }catch (e){
@@ -123,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             gradient: LinearGradient(
 
-              begin: change == false ? Alignment.topRight: Alignment.topLeft,
+                begin: change == false ? Alignment.topRight: Alignment.topLeft,
                 end: change == false ? Alignment.bottomLeft : Alignment.bottomRight,
 
                 stops: [0,
@@ -157,13 +222,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       elevation: 10,
                       child: Center(
-                        child: Text("Memory Games",
-                          style: TextStyle(
-                            fontSize: 26,
-                            fontFamily: "Source",
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xffDD2A7B),
-                          ),),
+                        child: AnimatedTextKit(
+                          animatedTexts: [
+                            WavyAnimatedText("Memory Game",
+                                speed: Duration(milliseconds: 450),
+                                textStyle: TextStyle(
+                                  fontSize: 29,
+                                  fontFamily: "Source",
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xffDD2A7B),
+                                )),
+                          ],
+                          repeatForever: true,
+                          isRepeatingAnimation: true,
+                        ),
                       ),
                     ),
                   ),
@@ -172,13 +244,31 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   GestureDetector(
                     onTap: (){
+                      setState((){
+                        Data.level = 1;
+                      });
                       Navigator.push(context, MaterialPageRoute(builder: (context) {
                         return Memory();
                       },));
                     },
-                    child: Container(
-                      height: 70,
-                      width: 215,
+
+                    onTapDown: (value){
+                      setState(() {
+                        newGame = true;
+                      });
+                    },
+
+                    onTapUp: (value){
+                      setState(() {
+                        newGame = false;
+                      });
+                    },
+
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 200),
+                      curve: Curves.bounceInOut,
+                      height: newGame == false ? 70 : 65,
+                      width: newGame == false ? 215 : 200,
                       child: Card(
                         margin: EdgeInsets.all(0),
                         color: Colors.white,
@@ -186,13 +276,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         elevation: 10,
-                        child: Center(child: Text("New Game",
+                        child: Center(
+                            child: Text("New Game",
                           style: TextStyle(
                             fontSize: 20,
                             fontFamily: "Source",
                             fontWeight: FontWeight.w600,
                             color: Color(0xffDD2A7B),
-                          ),)),
+                          ),)
+                        ),
                       ),
                     ),
                   ),
@@ -205,9 +297,23 @@ class _HomeScreenState extends State<HomeScreen> {
                         return Challenges();
                       },));
                     },
-                    child: Container(
-                      height: 70,
-                      width: 215,
+
+                    onTapDown: (value){
+                      setState(() {
+                        challenges = true;
+                      });
+                    },
+
+                    onTapUp: (value){
+                      setState(() {
+                        challenges = false;
+                      });
+                    },
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 200),
+                      curve: Curves.bounceInOut,
+                      height: challenges == false ? 70 : 65,
+                      width: challenges == false ? 215 : 200,
                       child: Card(
                         margin: EdgeInsets.all(0),
                         color: Colors.white,
@@ -215,7 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         elevation: 10,
-                        child: Center(child: Text("Challenges",
+                        child: Center(child: Text("Levels",
                           style: TextStyle(
                             fontSize: 20,
                             fontFamily: "Source",
@@ -234,9 +340,23 @@ class _HomeScreenState extends State<HomeScreen> {
                         return HighScore();
                       },));
                     },
-                    child: Container(
-                      height: 70,
-                      width: 215,
+
+                    onTapDown: (value){
+                      setState(() {
+                        highScore = true;
+                      });
+                    },
+
+                    onTapUp: (value){
+                      setState(() {
+                        highScore = false;
+                      });
+                    },
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 200),
+                      curve: Curves.bounceInOut,
+                      height: highScore == false ? 70 : 65,
+                      width: highScore == false ? 215 : 200,
                       child: Card(
                         margin: EdgeInsets.all(0),
                         color: Colors.white,
@@ -266,6 +386,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   IconButton(
+                    icon: Icon(Data.play == false ?
+                        Icons.play_circle_outline :
+                    Icons.pause_circle_outline),
+                    iconSize: 28,
+                    color: Colors.white,
+                    onPressed: (){
+                      setState(() {
+                        if(Data.play == true){
+                          audioPlayer.pause();
+                          Data.play = false;
+                        }else{
+                          audioPlayer.resume();
+                          Data.play = true;
+                        }
+                      });
+                    },
+                  ),
+
+                  IconButton(
                     icon: Icon(Icons.help),
                     iconSize: 26,
                     color: Colors.white,
@@ -291,6 +430,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.white,
                     onPressed: (){
                       share();
+                    },
+                  ),
+
+                  IconButton(
+                    icon: Icon(Icons.settings),
+                    iconSize: 25,
+                    color: Colors.white,
+                    onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        return Setting();
+                      },));
                     },
                   ),
                 ],

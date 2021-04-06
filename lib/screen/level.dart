@@ -19,6 +19,7 @@ class _LevelsState extends State<Levels> {
   bool show = true;
   bool choose = false;
   bool restartG = false;
+  bool nextLevel = false;
   int i;
   int ab = 2;
   int y;
@@ -81,7 +82,50 @@ class _LevelsState extends State<Levels> {
             getHighScore();
           });
         });
+      }else if(widget.level == 4){
+        myPrefs.setInt("l4", numberOfTurns).then((value) {
+          myPrefs.setInt("t4", gameTime).then((value) {
+            getHighScore();
+          });
+        });
+      }else if(widget.level == 5){
+        myPrefs.setInt("l5", numberOfTurns).then((value) {
+          myPrefs.setInt("t5", gameTime).then((value) {
+            getHighScore();
+          });
+        });
+      }else if(widget.level == 6){
+        myPrefs.setInt("l6", numberOfTurns).then((value) {
+          myPrefs.setInt("t6", gameTime).then((value) {
+            getHighScore();
+          });
+        });
+      }else if(widget.level == 7){
+        myPrefs.setInt("l7", numberOfTurns).then((value) {
+          myPrefs.setInt("t7", gameTime).then((value) {
+            getHighScore();
+          });
+        });
+      }else if(widget.level == 8){
+        myPrefs.setInt("l8", numberOfTurns).then((value) {
+          myPrefs.setInt("t8", gameTime).then((value) {
+            getHighScore();
+          });
+        });
+      }else if(widget.level == 9){
+        myPrefs.setInt("l9", numberOfTurns).then((value) {
+          myPrefs.setInt("t9", gameTime).then((value) {
+            getHighScore();
+          });
+        });
       }
+    });
+  }
+
+  setPlayerLevel() async{
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    setState(() {
+      myPrefs.setInt("pl", Data.playerLevel);
     });
   }
 
@@ -108,6 +152,48 @@ class _LevelsState extends State<Levels> {
           Data.time_3 = myPrefs.getInt("t3");
         });
       }
+    }else if(widget.level == 4){
+      if(myPrefs.getInt("l4") != null && myPrefs.getInt("t4") != null) {
+        setState(() {
+          Data.level_4 = myPrefs.getInt("l4");
+          Data.time_4 = myPrefs.getInt("t4");
+        });
+      }
+    }else if(widget.level == 5){
+      if(myPrefs.getInt("l5") != null && myPrefs.getInt("t5") != null) {
+        setState(() {
+          Data.level_5 = myPrefs.getInt("l5");
+          Data.time_5 = myPrefs.getInt("t5");
+        });
+      }
+    }else if(widget.level == 6){
+      if(myPrefs.getInt("l6") != null && myPrefs.getInt("t6") != null) {
+        setState(() {
+          Data.level_6 = myPrefs.getInt("l6");
+          Data.time_6 = myPrefs.getInt("t6");
+        });
+      }
+    }else if(widget.level == 7){
+      if(myPrefs.getInt("l7") != null && myPrefs.getInt("t7") != null) {
+        setState(() {
+          Data.level_7 = myPrefs.getInt("l7");
+          Data.time_7 = myPrefs.getInt("t7");
+        });
+      }
+    }else if(widget.level == 8){
+      if(myPrefs.getInt("l8") != null && myPrefs.getInt("t8") != null) {
+        setState(() {
+          Data.level_8 = myPrefs.getInt("l8");
+          Data.time_8 = myPrefs.getInt("t8");
+        });
+      }
+    }else if(widget.level == 9){
+      if(myPrefs.getInt("l9") != null && myPrefs.getInt("t9") != null) {
+        setState(() {
+          Data.level_9 = myPrefs.getInt("l9");
+          Data.time_9 = myPrefs.getInt("t9");
+        });
+      }
     }
   }
 
@@ -116,9 +202,14 @@ class _LevelsState extends State<Levels> {
 
     for( int i = 1;
     widget.level == 1 ? i <= 6 :
-    widget.level == 2 ? i <= 8 :
-    widget.level == 3 ? i <= 10 :
-    widget.level == 4 ? i <= 12 :
+    widget.level == 2 ? i <= 6 :
+    widget.level == 3 ? i <= 8 :
+    widget.level == 4 ? i <= 6 :
+    widget.level == 5 ? i <= 8 :
+    widget.level == 6 ? i <= 8 :
+    widget.level == 7 ? i <= 10 :
+    widget.level == 8 ? i <= 10 :
+    widget.level == 9 ? i <= 10 :
     i <= 10; i++){
       a.add(i.toString());
       a.add(i.toString());
@@ -128,22 +219,22 @@ class _LevelsState extends State<Levels> {
 
   number(int index){
     if(index == i || y == index){
-      return widget.open == 0 ?
+      return widget.open == 1 ?
       Image.asset("asset/images/${a[index]}.png",
         fit: BoxFit.contain,
         width:
-        widget.level == 1 ? 80 :
-        widget.level == 2 ? 65 :
-        widget.level == 3 ? 65 :
+        widget.level == 1 ? 75 :
+        widget.level == 2 ? 80 :
+        widget.level == 3 ? 60 :
         widget.level == 4 ? 65 :
         65,
       ) :
-      widget.open == 1 ?
+      widget.open == 2 ?
       Text(emoji[int.parse(a[index])],
           style: TextStyle(
             fontSize: 32,
             color: Colors.white,
-          )) : widget.open == 2 ?
+          )) : widget.open == 3 ?
       Text(a[index],
           style: TextStyle(
             fontSize: 32,
@@ -152,26 +243,30 @@ class _LevelsState extends State<Levels> {
       Image.asset("asset/images/${a[index]}.png",
         fit: BoxFit.contain,
         width:
-        widget.level == 1 ? 80 :
-        widget.level == 2 ? 65 :
-        widget.level == 3 ? 65 : 65,
+        widget.level == 1 ? 77 :
+        widget.level == 2 ? 80 :
+        widget.level == 3 ? 65 :
+        widget.level == 4 ? 80 :
+        65,
       );
     } else {
       return
-        widget.open == 0 ? Image.asset("asset/images/3.png",
+        widget.open == 1 ? Image.asset("asset/images/3.png",
           width:
           widget.level == 1 ? 80 :
-          widget.level == 2 ? 60 :
-          widget.level == 3 ? 55 : 50,
+          widget.level == 2 ? 80 :
+          widget.level == 3 ? 55 :
+          widget.level == 4 ? 60 :
+          50,
 
           fit: BoxFit.contain,
-          color: Colors.black.withOpacity(0.2),
+          color: Color(0xffDD2A7B).withOpacity(0.85),
         ) :
         Text("?",
             style: TextStyle(
                 fontSize:
                 widget.level == 1 ? 38 : 30,
-                color: Colors.white
+                color: Color(0xffDD2A7B).withOpacity(0.85)
             ));
     }
   }
@@ -312,24 +407,41 @@ class _LevelsState extends State<Levels> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    color:  Color(0xffDD2A7B),
+                    color:  Colors.white,
                     child: Center(
                       child: Text(
                         widget.level == 1 ?
-                        "High Score in 3 X 4\n"
+                        "High Score in Level 1\n"
                             "     ${Data.level_1} turns in ${Data.time_1} sec" :
                         widget.level == 2 ?
-                        "High Score in 4 X 4\n"
+                        "High Score in Level 2\n"
                             "     ${Data.level_2} turns in ${Data.time_2} sec" :
                         widget.level == 3 ?
-                        "High Score in 4 X 5\n"
-                            "      ${Data.level_3} turns in ${Data.time_3} sec"
-                            :
+                        "High Score in Level 3\n"
+                            "      ${Data.level_3} turns in ${Data.time_3} sec" :
+                        widget.level == 4 ?
+                        "High Score in Level 4\n"
+                            "      ${Data.level_4} turns in ${Data.time_4} sec" :
+                        widget.level == 5 ?
+                        "High Score in Level 5\n"
+                            "      ${Data.level_5} turns in ${Data.time_5} sec" :
+                        widget.level == 6 ?
+                        "High Score in Level 6\n"
+                            "      ${Data.level_6} turns in ${Data.time_6} sec" :
+                        widget.level == 7 ?
+                        "High Score in Level 7\n"
+                            "      ${Data.level_7} turns in ${Data.time_7} sec" :
+                        widget.level == 8 ?
+                        "High Score in Level 8\n"
+                            "      ${Data.level_8} turns in ${Data.time_8} sec" :
+                        widget.level == 9 ?
+                        "High Score in Level 9\n"
+                            "      ${Data.level_9} turns in ${Data.time_9} sec" :
                         "High Score in Game\n"
                             "     100 turns in 132 sec",
                         style: TextStyle(
                           fontSize: 22,
-                          color: Colors.white,
+                          color: Color(0xffDD2A7B),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -355,8 +467,10 @@ class _LevelsState extends State<Levels> {
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount:
                       widget.level == 1 ? 3 :
-                      widget.level == 2 ? 4 :
-                      widget.level == 3 ? 4 : 4,
+                      widget.level == 2 ? 3 :
+                      widget.level == 3 ? 4 :
+                      widget.level == 4 ? 3 :
+                      4,
                       crossAxisSpacing: 4,
                       mainAxisSpacing: 4,
                     ),
@@ -396,23 +510,25 @@ class _LevelsState extends State<Levels> {
                           }
                         },
                         child: Card(
-                          color: b.contains(a[index]) ? Colors.green : i == index || y == index ? Colors.red : Color(0xffDD2A7B),
+                          color: b.contains(a[index]) ? Colors.green : i == index || y == index ? Colors.red : Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           elevation: 8,
-                          child: widget.open == 0 ? Center(
+                          child: widget.open == 1 ? Center(
                             child: b.contains(a[index]) ?
                             Image.asset("asset/images/${a[index]}.png",
                               fit: BoxFit.contain,
                               width:
-                              widget.level == 1 ? 95 :
-                              widget.level == 2 ? 70 :
-                              widget.level == 3 ? 70 : 70,
+                              widget.level == 1 ? 85 :
+                              widget.level == 2 ? 95 :
+                              widget.level == 3 ? 70 :
+                              widget.level == 4 ? 95 :
+                              70,
                             ) :
                             number(index),
                           ) :
-                          widget.open == 1 ?
+                          widget.open == 2 ?
                           Center(
                             child: b.contains (a[index]) ? Text(
                               emoji[int.parse(a[index])],
@@ -422,7 +538,7 @@ class _LevelsState extends State<Levels> {
                               ),
                             ) : number(index),
                           ) :
-                          widget.open == 2 ?
+                          widget.open == 3 ?
                           Center(
                             child: b.contains (a[index]) ? Text(
                               a[index],
@@ -464,7 +580,15 @@ class _LevelsState extends State<Levels> {
     }
 
     if(b.length >= a.length){
-
+      setState(() {
+        if(widget.level <= 8){
+          nextLevel = true;
+        }
+      });
+      if(widget.level == Data.playerLevel){
+        Data.playerLevel = widget.level +1;
+        setPlayerLevel();
+      }
       if(widget.level == 1){
         if(Data.level_1 != 0){
           if(numberOfTurns == Data.level_1){
@@ -547,6 +671,168 @@ class _LevelsState extends State<Levels> {
           setHighScore();
           timer.cancel();
         }
+      }else if(widget.level == 4){
+        if(Data.level_4 != 0){
+          if(numberOfTurns == Data.level_4){
+            if(gameTime < Data.time_4){
+              showWinDialog("   New High Score\n"
+                  "$numberOfTurns Turns in $gameTime sec");
+              setHighScore();
+              timer.cancel();
+            }else{
+              showWinDialog("$numberOfTurns Turns in $gameTime sec");
+              timer.cancel();
+            }
+          }else if(numberOfTurns < Data.level_4){
+            showWinDialog("   New High Score\n"
+                "$numberOfTurns Turns in $gameTime sec");
+            setHighScore();
+            timer.cancel();
+          }else{
+            showWinDialog("$numberOfTurns Turns in $gameTime sec");
+            timer.cancel();
+          }
+        }else{
+          showWinDialog("   New High Score\n"
+              "$numberOfTurns Turns in $gameTime sec");
+          setHighScore();
+          timer.cancel();
+        }
+      }else if(widget.level == 5){
+        if(Data.level_5 != 0){
+          if(numberOfTurns == Data.level_5){
+            if(gameTime < Data.time_5){
+              showWinDialog("   New High Score\n"
+                  "$numberOfTurns Turns in $gameTime sec");
+              setHighScore();
+              timer.cancel();
+            }else{
+              showWinDialog("$numberOfTurns Turns in $gameTime sec");
+              timer.cancel();
+            }
+          }else if(numberOfTurns < Data.level_5){
+            showWinDialog("   New High Score\n"
+                "$numberOfTurns Turns in $gameTime sec");
+            setHighScore();
+            timer.cancel();
+          }else{
+            showWinDialog("$numberOfTurns Turns in $gameTime sec");
+            timer.cancel();
+          }
+        }else{
+          showWinDialog("   New High Score\n"
+              "$numberOfTurns Turns in $gameTime sec");
+          setHighScore();
+          timer.cancel();
+        }
+      }else if(widget.level == 6){
+        if(Data.level_6 != 0){
+          if(numberOfTurns == Data.level_6){
+            if(gameTime < Data.time_6){
+              showWinDialog("   New High Score\n"
+                  "$numberOfTurns Turns in $gameTime sec");
+              setHighScore();
+              timer.cancel();
+            }else{
+              showWinDialog("$numberOfTurns Turns in $gameTime sec");
+              timer.cancel();
+            }
+          }else if(numberOfTurns < Data.level_6){
+            showWinDialog("   New High Score\n"
+                "$numberOfTurns Turns in $gameTime sec");
+            setHighScore();
+            timer.cancel();
+          }else{
+            showWinDialog("$numberOfTurns Turns in $gameTime sec");
+            timer.cancel();
+          }
+        }else{
+          showWinDialog("   New High Score\n"
+              "$numberOfTurns Turns in $gameTime sec");
+          setHighScore();
+          timer.cancel();
+        }
+      }else if(widget.level == 7){
+        if(Data.level_7 != 0){
+          if(numberOfTurns == Data.level_7){
+            if(gameTime < Data.time_7){
+              showWinDialog("   New High Score\n"
+                  "$numberOfTurns Turns in $gameTime sec");
+              setHighScore();
+              timer.cancel();
+            }else{
+              showWinDialog("$numberOfTurns Turns in $gameTime sec");
+              timer.cancel();
+            }
+          }else if(numberOfTurns < Data.level_7){
+            showWinDialog("   New High Score\n"
+                "$numberOfTurns Turns in $gameTime sec");
+            setHighScore();
+            timer.cancel();
+          }else{
+            showWinDialog("$numberOfTurns Turns in $gameTime sec");
+            timer.cancel();
+          }
+        }else{
+          showWinDialog("   New High Score\n"
+              "$numberOfTurns Turns in $gameTime sec");
+          setHighScore();
+          timer.cancel();
+        }
+      }else if(widget.level == 8){
+        if(Data.level_8 != 0){
+          if(numberOfTurns == Data.level_8){
+            if(gameTime < Data.time_8){
+              showWinDialog("   New High Score\n"
+                  "$numberOfTurns Turns in $gameTime sec");
+              setHighScore();
+              timer.cancel();
+            }else{
+              showWinDialog("$numberOfTurns Turns in $gameTime sec");
+              timer.cancel();
+            }
+          }else if(numberOfTurns < Data.level_8){
+            showWinDialog("   New High Score\n"
+                "$numberOfTurns Turns in $gameTime sec");
+            setHighScore();
+            timer.cancel();
+          }else{
+            showWinDialog("$numberOfTurns Turns in $gameTime sec");
+            timer.cancel();
+          }
+        }else{
+          showWinDialog("   New High Score\n"
+              "$numberOfTurns Turns in $gameTime sec");
+          setHighScore();
+          timer.cancel();
+        }
+      }else if(widget.level == 9){
+        if(Data.level_9 != 0){
+          if(numberOfTurns == Data.level_9){
+            if(gameTime < Data.time_9){
+              showWinDialog("   New High Score\n"
+                  "$numberOfTurns Turns in $gameTime sec");
+              setHighScore();
+              timer.cancel();
+            }else{
+              showWinDialog("$numberOfTurns Turns in $gameTime sec");
+              timer.cancel();
+            }
+          }else if(numberOfTurns < Data.level_9){
+            showWinDialog("   New High Score\n"
+                "$numberOfTurns Turns in $gameTime sec");
+            setHighScore();
+            timer.cancel();
+          }else{
+            showWinDialog("$numberOfTurns Turns in $gameTime sec");
+            timer.cancel();
+          }
+        }else{
+          showWinDialog("   New High Score\n"
+              "$numberOfTurns Turns in $gameTime sec");
+          setHighScore();
+          timer.cancel();
+        }
       }
     }
   }
@@ -564,6 +850,50 @@ class _LevelsState extends State<Levels> {
       show = true;
       b = [];
       first();
+      if(gameTime > 0){
+        timer.cancel();
+        gameTime = 0;
+      }
+      gameTime = 0;
+      restartG = false;
+    });
+  }
+
+  levelUp(){
+    setState(() {
+      widget.level++;
+      if(widget.level == 2){
+        widget.open = 3;
+      }else if(widget.level == 3){
+        widget.open = 1;
+      }else if(widget.level == 4){
+        widget.open = 2;
+      }else if(widget.level == 5){
+        widget.open = 3;
+      }else if(widget.level == 6){
+        widget.open = 2;
+      }else if(widget.level == 7){
+        widget.open = 3;
+      }else if(widget.level == 8){
+        widget.open = 1;
+      }else if(widget.level == 9){
+        widget.open = 2;
+      }
+      print(widget.level);
+      print(widget.open);
+      print(">>>>>>>>>>>>>>>>>>>>>>>>>>");
+      i = null;
+      ab = 2;
+      y = null;
+      q = "";
+      w = "";
+      numberOfTurns = 0;
+      a = [];
+      sec = 700;
+      show = true;
+      b = [];
+      first();
+      getHighScore();
       if(gameTime > 0){
         timer.cancel();
         gameTime = 0;
@@ -594,17 +924,20 @@ class _LevelsState extends State<Levels> {
                     onTap: (){
                       Navigator.of(context).pop();
                     },
-                    child: Text("cancel",
-                      style: TextStyle(
-                        fontSize: 21,
-                        color: Color(0xff151515),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Text("cancel",
+                        style: TextStyle(
+                          fontSize: 21,
+                          color: Color(0xff151515),
+                        ),
                       ),
                     ),
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width*0.12,
                   ),
-                  MaterialButton(
+                  nextLevel == false ? MaterialButton(
                     elevation: 10,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -618,6 +951,26 @@ class _LevelsState extends State<Levels> {
                     },
                     child: Text(
                       'Restart',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ) : MaterialButton(
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    color: Colors.red,
+                    minWidth: 140,
+                    height: 50,
+                    onPressed: (){
+                      levelUp();
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      'Next Level',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,

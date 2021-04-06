@@ -109,20 +109,18 @@ class _HelpState extends State<Help> {
                         Text("Version Details",
                           style: TextStyle(
                             fontSize: 24,
-                            // fontFamily: Data.font,
                             color: Colors.black.withOpacity(0.7),
                           ),),
-                        Text("v1.0.0",
+                        Text("v1.1.13",
                           style: TextStyle(
                             fontSize: 22,
-                            // fontFamily: Data.font,
                             color: Colors.black.withOpacity(0.7),
                           ),),
                         GestureDetector(
                           onTap: (){
                             showAboutDialog(
                               context: context,
-                              applicationVersion: "1.0.0",
+                              applicationVersion: "1.1.13",
                             );
                           },
                           child: Container(
@@ -137,7 +135,6 @@ class _HelpState extends State<Help> {
                               child: Center(child: Text("LICENSES",
                                 style: TextStyle(
                                     fontSize: 18,
-                                    // fontFamily: Data.font,
                                     color: Colors.black45,
                                 ),)),
                             ),
@@ -179,7 +176,6 @@ class _HelpState extends State<Help> {
                               "regarding to updates or ask any query we will always there to help you.",
                             style: TextStyle(
                               fontSize: 15,
-                              // fontFamily: Data.font,
                               color: Colors.black.withOpacity(0.5),
                             ),),
                         ),
@@ -201,7 +197,6 @@ class _HelpState extends State<Help> {
                                   child: Center(child: Text("Follow us on Instagram",
                                     style: TextStyle(
                                         fontSize: 18,
-                                        // fontFamily: Data.font,
                                         color: Colors.red.shade800
                                     ),)),
                                 ),
@@ -224,7 +219,6 @@ class _HelpState extends State<Help> {
                                   child: Center(child: Text("Follow us on Twitter",
                                     style: TextStyle(
                                         fontSize: 18,
-                                        // fontFamily: Data.font,
                                         fontWeight: FontWeight.w600,
                                         color: Colors.blue
                                     ),)),
@@ -248,7 +242,6 @@ class _HelpState extends State<Help> {
                                   child: Center(child: Text("Follow us on Facebook",
                                     style: TextStyle(
                                         fontSize: 18,
-                                        // fontFamily: Data.font,
                                         fontWeight: FontWeight.w600,
                                         color: Colors.blue.shade900
                                     ),)),
@@ -279,7 +272,6 @@ class _HelpState extends State<Help> {
                         Text("Feedback",
                           style: TextStyle(
                             fontSize: 23,
-                            // fontFamily: Data.font,
                             color: Colors.black.withOpacity(0.7),
                           ),),
                         Padding(

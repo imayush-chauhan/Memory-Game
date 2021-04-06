@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:memory/data/data.dart';
 import 'package:memory/screen/level.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Challenges extends StatefulWidget {
   @override
@@ -12,9 +16,43 @@ class _ChallengesState extends State<Challenges> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   bool choose = false;
+  bool pokeSlide = false;
   int title = 0;
+  Timer timer;
+
+  int poke1 = 3;
+  int poke2 = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    getPlayerLevel();
+    timer = Timer.periodic(
+        Duration(milliseconds: 1400), (timer) {
+        setState(() {
+          pokeSlide = !pokeSlide;
+        });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    timer.cancel();
+  }
+
+  getPlayerLevel() async{
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    if(myPrefs.getInt("pl") != null) {
+      setState(() {
+        Data.playerLevel = myPrefs.getInt("pl");
+      });
+    }
+  }
 
   snackBar(String s){
+    // ignore: deprecated_member_use
+    _scaffoldKey.currentState.hideCurrentSnackBar();
     // ignore: deprecated_member_use
     _scaffoldKey.currentState.showSnackBar(
         SnackBar(duration: Duration(milliseconds: 2000),backgroundColor: Colors.white,
@@ -52,7 +90,7 @@ class _ChallengesState extends State<Challenges> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
-          title: Text("Challenges",
+          title: Text("Levels",
             style: TextStyle(
                 color: Colors.white,
                 fontSize: 25,
@@ -66,9 +104,9 @@ class _ChallengesState extends State<Challenges> {
           ),
         ),
         body: Container(
-          height: MediaQuery.of(context).size.height*0.8,
+          height: MediaQuery.of(context).size.height,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
@@ -77,16 +115,16 @@ class _ChallengesState extends State<Challenges> {
                 children: [
                   GestureDetector(
                     onTap: (){
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
                         return Levels(
                           level: 1,
-                          open: title,
+                          open: 1,
                         );
                       },));
                     },
                     child: Container(
                       height: 70,
-                      width: 140,
+                      width: 120,
                       child: Card(
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
@@ -98,31 +136,90 @@ class _ChallengesState extends State<Challenges> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                "3 X 4",
+                                "Level 1",
                                 style: TextStyle(
                                     color: Color(0xffDD2A7B),
-                                    fontSize: 20,
+                                    fontSize: 19,
                                     fontWeight: FontWeight.w600
                                 ),
                               ),
                             ],
+                          )
+                      ),
+                    ),
+                  ),
+
+                  GestureDetector(
+                    onTap: (){
+                      if(Data.playerLevel >= 2){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return Levels(
+                            level: 2,
+                            open: 3,
+                          );
+                        },));
+                      }else{
+                        snackBar("Complete level ${Data.playerLevel} to unlock this level");
+                      }
+                    },
+                    child: Container(
+                      height: 70,
+                      width: 120,
+                      child: Data.playerLevel >= 2 ?
+                      Card(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          elevation: 10,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Level 2",
+                                style: TextStyle(
+                                    color: Color(0xffDD2A7B),
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w600
+                                ),
+                              ),
+                            ],
+                          )
+                      ) : Card(
+                          color: Color(0xff171717),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          elevation: 10,
+                          child: Center(
+                            child: Icon(
+                              Icons.lock_outline,
+                              color: Colors.white.withOpacity(0.8),
+                              size: 27,
+                            ),
                           )
                       ),
                     ),
                   ),
                   GestureDetector(
                     onTap: (){
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                        return Levels(
-                          level: 2,
-                          open: title,
-                        );
-                      },));
+                      if(Data.playerLevel >= 3){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return Levels(
+                            level: 3,
+                            open: 1,
+                          );
+                        },));
+                      }else{
+                        snackBar("Complete level ${Data.playerLevel} to unlock this level");
+                      }
                     },
                     child: Container(
                       height: 70,
-                      width: 140,
-                      child: Card(
+                      width: 120,
+                      child: Data.playerLevel >= 3 ?
+                      Card(
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
@@ -133,38 +230,55 @@ class _ChallengesState extends State<Challenges> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                "4 X 4",
+                                "Level 3",
                                 style: TextStyle(
                                     color: Color(0xffDD2A7B),
-                                    fontSize: 20,
+                                    fontSize: 19,
                                     fontWeight: FontWeight.w600
                                 ),
                               ),
                             ],
+                          )
+                      ) : Card(
+                          color: Color(0xff171717),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          elevation: 10,
+                          child: Center(
+                              child: Icon(
+                                Icons.lock_outline,
+                                color: Colors.white.withOpacity(0.8),
+                                size: 27,
+                              )
                           )
                       ),
                     ),
                   ),
                 ],
               ),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   GestureDetector(
                     onTap: (){
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                        return Levels(
-                          level: 3,
-                          open: title,
-                        );
-                      },));
+                      if(Data.playerLevel >= 4){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return Levels(
+                            level: 4,
+                            open: 2,
+                          );
+                        },));
+                      }else{
+                        snackBar("Complete level ${Data.playerLevel} to unlock this level");
+                      }
                     },
                     child: Container(
                       height: 70,
-                      width: 140,
-                      child: Card(
+                      width: 120,
+                      child: Data.playerLevel >= 4 ?
+                      Card(
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
@@ -175,26 +289,49 @@ class _ChallengesState extends State<Challenges> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                "4 X 5",
+                                "Level 4",
                                 style: TextStyle(
                                     color: Color(0xffDD2A7B),
-                                    fontSize: 20,
+                                    fontSize: 19,
                                     fontWeight: FontWeight.w600
                                 ),
                               ),
                             ],
+                          )
+                      ) : Card(
+                          color: Color(0xff171717),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          elevation: 10,
+                          child: Center(
+                              child: Icon(
+                                Icons.lock_outline,
+                                color: Colors.white.withOpacity(0.8),
+                                size: 27,
+                              )
                           )
                       ),
                     ),
                   ),
                   GestureDetector(
                     onTap: (){
-                      snackBar("Game Mode coming soon");
+                      if(Data.playerLevel >= 5){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return Levels(
+                            level: 5,
+                            open: 3,
+                          );
+                        },));
+                      }else{
+                        snackBar("Complete level ${Data.playerLevel} to unlock this level");
+                      }
                     },
                     child: Container(
                       height: 70,
-                      width: 140,
-                      child: Card(
+                      width: 120,
+                      child: Data.playerLevel >= 5 ?
+                      Card(
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
@@ -205,14 +342,245 @@ class _ChallengesState extends State<Challenges> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                "5 X 5",
+                                "Level 5",
                                 style: TextStyle(
                                     color: Color(0xffDD2A7B),
-                                    fontSize: 20,
+                                    fontSize: 19,
                                     fontWeight: FontWeight.w600
                                 ),
                               ),
                             ],
+                          )
+                      ) : Card(
+                          color: Color(0xff171717),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          elevation: 10,
+                          child: Center(
+                              child: Icon(
+                                Icons.lock_outline,
+                                color: Colors.white.withOpacity(0.8),
+                                size: 27,
+                              )
+                          )
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: (){
+                      if(Data.playerLevel >= 6){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return Levels(
+                            level: 6,
+                            open: 2,
+                          );
+                        },));
+                      }else{
+                        snackBar("Complete level ${Data.playerLevel} to unlock this level");
+                      }
+                    },
+                    child: Container(
+                      height: 70,
+                      width: 120,
+                      child: Data.playerLevel >= 6 ?
+                      Card(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          elevation: 10,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Level 6",
+                                style: TextStyle(
+                                    color: Color(0xffDD2A7B),
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w600
+                                ),
+                              ),
+                            ],
+                          )
+                      ) : Card(
+                          color: Color(0xff171717),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          elevation: 10,
+                          child: Center(
+                              child: Icon(
+                                Icons.lock_outline,
+                                color: Colors.white.withOpacity(0.8),
+                                size: 27,
+                              )
+                          )
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: (){
+                      if(Data.playerLevel >= 7){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return Levels(
+                            level: 7,
+                            open: 3,
+                          );
+                        },));
+                      }else{
+                        snackBar("Complete level ${Data.playerLevel} to unlock this level");
+                      }
+                    },
+                    child: Container(
+                      height: 70,
+                      width: 120,
+                      child: Data.playerLevel >= 7 ?
+                      Card(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          elevation: 10,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Level 7",
+                                style: TextStyle(
+                                    color: Color(0xffDD2A7B),
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w600
+                                ),
+                              ),
+                            ],
+                          )
+                      ) : Card(
+                          color: Color(0xff171717),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          elevation: 10,
+                          child: Center(
+                              child: Icon(
+                                Icons.lock_outline,
+                                color: Colors.white.withOpacity(0.8),
+                                size: 27,
+                              )
+                          )
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: (){
+                      if(Data.playerLevel >= 8){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return Levels(
+                            level: 8,
+                            open: 1,
+                          );
+                        },));
+                      }else{
+                        snackBar("Complete level ${Data.playerLevel} to unlock this level");
+                      }
+                    },
+                    child: Container(
+                      height: 70,
+                      width: 120,
+                      child: Data.playerLevel >= 8 ?
+                      Card(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          elevation: 10,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Level 8",
+                                style: TextStyle(
+                                    color: Color(0xffDD2A7B),
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w600
+                                ),
+                              ),
+                            ],
+                          )
+                      ) : Card(
+                          color: Color(0xff171717),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          elevation: 10,
+                          child: Center(
+                              child: Icon(
+                                Icons.lock_outline,
+                                color: Colors.white.withOpacity(0.8),
+                                size: 27,
+                              )
+                          )
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: (){
+                      if(Data.playerLevel >= 9){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return Levels(
+                            level: 9,
+                            open: 2,
+                          );
+                        },));
+                      }else{
+                        snackBar("Complete level ${Data.playerLevel} to unlock this level");
+                      }
+                    },
+                    child: Container(
+                      height: 70,
+                      width: 120,
+                      child: Data.playerLevel >= 9 ?
+                      Card(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          elevation: 10,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Level 9",
+                                style: TextStyle(
+                                    color: Color(0xffDD2A7B),
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w600
+                                ),
+                              ),
+                            ],
+                          )
+                      ) : Card(
+                          color: Color(0xff171717),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          elevation: 10,
+                          child: Center(
+                              child: Icon(
+                                Icons.lock_outline,
+                                color: Colors.white.withOpacity(0.8),
+                                size: 27,
+                              )
                           )
                       ),
                     ),
@@ -221,144 +589,7 @@ class _ChallengesState extends State<Challenges> {
               ),
               GestureDetector(
                 onTap: (){
-                  setState(() {
-                    choose = true;
-                  });
-                },
-                child: AnimatedContainer(
-                  duration: Duration(milliseconds: 700),
-                  width: choose == false ? MediaQuery.of(context).size.width*0.8 :
-                  MediaQuery.of(context).size.width,
-                  height: 80,
-                  child: choose == false ?
-                  Card(
-                    elevation: 10,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Center(
-                      child: Text(
-                      title == 1 ? "Pokemon" :
-                      title == 2 ? "Emoji" :
-                      title == 3 ? "Number" :
-                      "Pokemon",
-                      style: TextStyle(
-                          color: Color(0xffDD2A7B),
-                          fontSize: 21,
-                          fontWeight: FontWeight.w600
-                      ),),
-                    ),
-                  ) :
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: (){
-                          setState(() {
-                            choose = false;
-                            title = 1;
-                          });
-                        },
-                        child: Container(
-                          height: 65,
-                          width: 120,
-                          child: Card(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              elevation: 10,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Pokemon",
-                                    style: TextStyle(
-                                        color: Color(0xffDD2A7B),
-                                        fontSize: 17.5,
-                                        fontWeight: FontWeight.w600
-                                    ),
-                                  ),
-                                ],
-                              )
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: (){
-                          setState(() {
-                            choose = false;
-                            title = 2;
-                          });
-                        },
-                        child: Container(
-                          height: 65,
-                          width: 110,
-                          child: Card(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              elevation: 10,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Emoji",
-                                    style: TextStyle(
-                                        color: Color(0xffDD2A7B),
-                                        fontSize: 17.5,
-                                        fontWeight: FontWeight.w600
-                                    ),
-                                  ),
-                                ],
-                              )
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: (){
-                          setState(() {
-                            choose = false;
-                            title = 3;
-                          });
-                        },
-                        child: Container(
-                          height: 65,
-                          width: 120,
-                          child: Card(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              elevation: 10,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Number",
-                                    style: TextStyle(
-                                        color: Color(0xffDD2A7B),
-                                        fontSize: 17.5,
-                                        fontWeight: FontWeight.w600
-                                    ),
-                                  ),
-                                ],
-                              )
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: (){
-                  snackBar("challenges will added soon");
+                  snackBar("challenges will be added soon");
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width*0.8,
@@ -377,6 +608,109 @@ class _ChallengesState extends State<Challenges> {
                         ),),
                     ),
                   ),
+                ),
+              ),
+              AnimatedContainer(
+                duration: Duration(milliseconds: 1400),
+                curve: Curves.easeInOut,
+                color: Colors.transparent,
+                height: 100,
+                width: pokeSlide == false ?
+                MediaQuery.of(context).size.width :
+                MediaQuery.of(context).size.width*0.95,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15),
+                      child: GestureDetector(
+                        onHorizontalDragEnd: (DragEndDetails details){
+                          setState(() {
+                            if(poke1 == 10){
+                              poke1 = 1;
+                            }else{
+                              poke1++;
+                            }
+                          });
+                        },
+                        child: Container(
+                          height: 100,
+                          width: 150,
+                          color: Colors.transparent,
+                          child: Card(
+                            color: Colors.white,
+                            elevation: 8,
+                            margin: EdgeInsets.all(0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                bottomLeft: Radius.circular(15),
+                                topRight: Radius.circular(50),
+                                bottomRight: Radius.circular(50),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                right: 35,
+                                top: 10,
+                                bottom: 10,
+                              ),
+                              child: CircleAvatar(
+                                radius: 40,
+                                backgroundColor: Colors.transparent,
+                                child: Image.asset("asset/images/$poke1.png"),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 15),
+                      child: GestureDetector(
+                        onHorizontalDragEnd: (DragEndDetails details){
+                          setState(() {
+                            if(poke2 == 10){
+                              poke2 = 1;
+                            }else{
+                              poke2++;
+                            }
+                          });
+                        },
+                        child: Container(
+                          height: 100,
+                          width: 150,
+                          color: Colors.transparent,
+                          child: Card(
+                            color: Colors.white,
+                            elevation: 8,
+                            margin: EdgeInsets.all(0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(50),
+                                bottomLeft: Radius.circular(50),
+                                topRight: Radius.circular(15),
+                                bottomRight: Radius.circular(15),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                left: 35,
+                                top: 10,
+                                bottom: 10,
+                              ),
+                              child: CircleAvatar(
+                                radius: 40,
+                                backgroundColor: Colors.transparent,
+                                child: Image.asset("asset/images/$poke2.png"),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

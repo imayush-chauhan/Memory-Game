@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "400452120850",
+    "project_id": "memory-game-3236c",
+    "storage_bucket": "memory-game-3236c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:400452120850:android:e321093413c8746c2403cb",
+        "android_client_info": {
+          "package_name": "com.blackhole.memory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "400452120850-mo5gv16qamfg6pb7679rb13fv942qt04.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcJY_dJeOTu6nRGnSTWfm5J4nZDfInGPo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "400452120850-mo5gv16qamfg6pb7679rb13fv942qt04.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

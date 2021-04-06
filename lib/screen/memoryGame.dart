@@ -167,15 +167,14 @@ class _MemoryState extends State<Memory> {
           Data.level == 3 ? 70 :
           Data.level == 4 ? 50 :
           Data.level == 5 ? 50 : 50,
-
           fit: BoxFit.contain,
-          color: Colors.black.withOpacity(0.2),
+          color: Color(0xffDD2A7B).withOpacity(0.85),
         ) :
         Text("?",
             style: TextStyle(
                 fontSize:
                 Data.level == 1 ? 38 : 30,
-                color: Colors.white
+                color: Color(0xffDD2A7B).withOpacity(0.85),
             ));
     }
   }
@@ -355,9 +354,10 @@ class _MemoryState extends State<Memory> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    color:  Color(0xffDD2A7B),
+                    color:  Colors.white,
                     child: Center(
                       child: Text(
+                        Data.highScoreInPokemon != 0 || Data.highScoreInNumber != 0 || Data.highScoreInEmoji != 0 ?
                         open == 0 ?
                         "High Score in Pokemon\n"
                             "     ${Data.highScoreInPokemon} turns in ${Data.timeInPokemon} sec" :
@@ -369,10 +369,11 @@ class _MemoryState extends State<Memory> {
                             "      ${Data.highScoreInNumber} turns in ${Data.timeInNumber} sec"
                             :
                         "High Score in Game\n"
-                            "     ${Data.highScoreInPokemon} turns in ${Data.timeInPokemon} sec",
+                            "     ${Data.highScoreInPokemon} turns in ${Data.timeInPokemon} sec" :
+                        "Find Matching cards",
                         style: TextStyle(
                           fontSize: 22,
-                          color: Colors.white,
+                          color: Color(0xffDD2A7B),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -442,7 +443,7 @@ class _MemoryState extends State<Memory> {
                           }
                         },
                         child: Card(
-                          color: b.contains(a[index]) ? Colors.green : i == index || y == index ? Colors.red : Color(0xffDD2A7B),
+                          color: b.contains(a[index]) ? Colors.green : i == index || y == index ? Colors.red : Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
@@ -779,7 +780,7 @@ class _MemoryState extends State<Memory> {
         builder: (BuildContext context){
           return AlertDialog(
             title: Center(child: Text(
-                yo,
+              yo,
             )),
             elevation: 5,
             shape: RoundedRectangleBorder(

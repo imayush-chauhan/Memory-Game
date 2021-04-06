@@ -12,8 +12,26 @@ class Data{
   static int level_1 = 0;
   static int level_2 = 0;
   static int level_3 = 0;
+  static int level_4 = 0;
+  static int level_5 = 0;
+  static int level_6 = 0;
+  static int level_7 = 0;
+  static int level_8 = 0;
+  static int level_9 = 0;
+
   static int time_1 = 0;
   static int time_2 = 0;
   static int time_3 = 0;
+  static int time_4 = 0;
+  static int time_5 = 0;
+  static int time_6 = 0;
+  static int time_7 = 0;
+  static int time_8 = 0;
+  static int time_9 = 0;
+
+  static int playerLevel = 1;
+
+  static bool play = true;
+  static String music = "";
 
 }
