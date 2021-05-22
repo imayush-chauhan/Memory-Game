@@ -1,6 +1,8 @@
-# memory
+# Memory Game: Picture matching & Brain training
 
-A new Flutter application.
+Made with Flutter
+
+1[](images/1.jpg)
 
 ## Getting Started
 
