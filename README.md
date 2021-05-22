@@ -2,7 +2,7 @@
 
 Made with Flutter
 
-![](images/1.jpg)
+![](images/memory%20game%20image.png)
 
 ## Getting Started
 
