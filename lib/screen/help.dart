@@ -14,17 +14,17 @@ class _HelpState extends State<Help> {
   final fireStore = Firebase.initializeApp();
 
   socialMedias(String s) async{
-      fireStore.then((value) async {
-        FirebaseFirestore.instance.
-        collection("memory").doc("1")
-            .get().then((result){
-          if(result.get(s) == ""){
-            snackBar("We don't have $s account try Instagram");
-          }else{
-            launch(result.get(s));
-          }
-        });
+    fireStore.then((value) async {
+      FirebaseFirestore.instance.
+      collection("memory").doc("1")
+          .get().then((result){
+        if(result.get(s) == ""){
+          snackBar("We don't have $s account try Instagram");
+        }else{
+          launch(result.get(s));
+        }
       });
+    });
   }
 
   mail(String s) async{
@@ -111,7 +111,7 @@ class _HelpState extends State<Help> {
                             fontSize: 24,
                             color: Colors.black.withOpacity(0.7),
                           ),),
-                        Text("v1.1.13",
+                        Text("v1.1.20",
                           style: TextStyle(
                             fontSize: 22,
                             color: Colors.black.withOpacity(0.7),
@@ -120,7 +120,7 @@ class _HelpState extends State<Help> {
                           onTap: (){
                             showAboutDialog(
                               context: context,
-                              applicationVersion: "1.1.13",
+                              applicationVersion: "1.1.20",
                             );
                           },
                           child: Container(
@@ -132,11 +132,12 @@ class _HelpState extends State<Help> {
                                 side: BorderSide(color: Colors.black26),
                               ),
                               color: Colors.white,
-                              child: Center(child: Text("LICENSES",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.black45,
-                                ),)),
+                              child: Center(
+                                  child: Text("LICENSES",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.black45,
+                                    ),)),
                             ),
                           ),
                         ),
@@ -172,8 +173,8 @@ class _HelpState extends State<Help> {
                           ),
                           child: Text(
                             "If you enjoy using Memory Game or want to know more about it, consider "
-                              "following us on different social medias. You will get all the latest news "
-                              "regarding to updates or ask any query we will always there to help you.",
+                                "following us on different social medias. You will get all the latest news "
+                                "regarding to updates or ask any query we will always there to help you.",
                             style: TextStyle(
                               fontSize: 15,
                               color: Colors.black.withOpacity(0.5),
@@ -296,7 +297,7 @@ class _HelpState extends State<Help> {
                             width: MediaQuery.of(context).size.width*0.8,
                             child: Card(
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                                borderRadius: BorderRadius.circular(20),
                               ),
                               color: Colors.blue,
                               child: Center(child: Text("Help & Feedback",

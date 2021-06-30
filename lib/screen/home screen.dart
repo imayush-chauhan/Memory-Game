@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'challenges page.dart';
 import 'help.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -31,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
   Timer timer;
 
   bool newGame = false;
+  bool level = false;
   bool challenges = false;
   bool highScore = false;
 
@@ -40,14 +42,27 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
     getHighScore();
     WidgetsBinding.instance.addObserver(this);
     musicName();
+    showAds();
     timer = Timer.periodic(
         Duration(
-        milliseconds: 2700), (timer) {
+            milliseconds: 2700), (timer) {
       setState(() {
-        if(Data.play == true){
+        if(Data.play == true && Data.neverPlay == false){
           playAgain();
         }
         change = !change;
+      });
+    });
+  }
+
+  showAds(){
+    fireStore.then((value) async {
+      FirebaseFirestore.instance.
+      collection("memory").doc("1")
+          .get().then((result){
+        setState(() {
+          Data.showAds = result.get("showAds");
+        });
       });
     });
   }
@@ -67,28 +82,36 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
     super.didChangeAppLifecycleState(state);
     switch(state){
       case AppLifecycleState.paused :
-        setState(() {
-          audioPlayer.pause();
-          Data.play = false;
-        });
+        if(Data.neverPlay == false){
+          setState(() {
+            audioPlayer.pause();
+            Data.play = false;
+          });
+        }
         break;
       case AppLifecycleState.resumed :
-        setState(() {
-          audioPlayer.resume();
-          Data.play = true;
-        });
+        if(Data.neverPlay == false){
+          setState(() {
+            audioPlayer.resume();
+            Data.play = true;
+          });
+        }
         break;
       case AppLifecycleState.inactive :
-        setState(() {
-          audioPlayer.pause();
-          Data.play = false;
-        });
+        if(Data.neverPlay == false){
+          setState(() {
+            audioPlayer.pause();
+            Data.play = false;
+          });
+        }
         break;
       case AppLifecycleState.detached :
-        setState(() {
-          audioPlayer.pause();
-          Data.play = false;
-        });
+        if(Data.neverPlay == false){
+          setState(() {
+            audioPlayer.pause();
+            Data.play = false;
+          });
+        }
         break;
     }
   }
@@ -125,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
 
     if(myPrefs.getBool("play") != null) {
       setState(() {
-        Data.play = myPrefs.getBool("play");
+        Data.neverPlay = myPrefs.getBool("play");
       });
     }
   }
@@ -248,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                         Data.level = 1;
                       });
                       Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return Memory();
+                        return Challenges();
                       },));
                     },
 
@@ -267,8 +290,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                     child: AnimatedContainer(
                       duration: Duration(milliseconds: 200),
                       curve: Curves.bounceInOut,
-                      height: newGame == false ? 70 : 65,
-                      width: newGame == false ? 215 : 200,
+                      height: newGame == false ? 65 : 60,
+                      width: newGame == false ? 200 : 185,
                       child: Card(
                         margin: EdgeInsets.all(0),
                         color: Colors.white,
@@ -277,13 +300,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                         ),
                         elevation: 10,
                         child: Center(
-                            child: Text("New Game",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontFamily: "Source",
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xffDD2A7B),
-                          ),)
+                            child: Text("Levels",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontFamily: "Source",
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xffDD2A7B),
+                              ),)
                         ),
                       ),
                     ),
@@ -294,16 +317,58 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                   GestureDetector(
                     onTap: (){
                       Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return Challenges();
+                        return ChooseChallenges();
                       },));
                     },
 
                     onTapDown: (value){
                       setState(() {
-                        challenges = true;
+                        level = true;
                       });
                     },
 
+                    onTapUp: (value){
+                      setState(() {
+                        level = false;
+                      });
+                    },
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 200),
+                      curve: Curves.bounceInOut,
+                      height: level == false ? 70 : 65,
+                      width: level == false ? 215 : 200,
+                      child: Card(
+                        margin: EdgeInsets.all(0),
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        elevation: 10,
+                        child: Center(
+                            child: Text("Challenges",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontFamily: "Source",
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xffDD2A7B),
+                              ),)),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        return Memory();
+                      },));
+                    },
+                    onTapDown: (value){
+                      setState(() {
+                        challenges = true;
+                      });
+                    },
                     onTapUp: (value){
                       setState(() {
                         challenges = false;
@@ -321,7 +386,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                           borderRadius: BorderRadius.circular(20),
                         ),
                         elevation: 10,
-                        child: Center(child: Text("Levels",
+                        child: Center(child: Text("Marathon",
                           style: TextStyle(
                             fontSize: 20,
                             fontFamily: "Source",
@@ -355,8 +420,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                     child: AnimatedContainer(
                       duration: Duration(milliseconds: 200),
                       curve: Curves.bounceInOut,
-                      height: highScore == false ? 70 : 65,
-                      width: highScore == false ? 215 : 200,
+                      height: highScore == false ? 65 : 60,
+                      width: highScore == false ? 200 : 185,
                       child: Card(
                         margin: EdgeInsets.all(0),
                         color: Colors.white,
@@ -386,19 +451,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   IconButton(
-                    icon: Icon(Data.play == false ?
-                        Icons.play_circle_outline :
+                    icon: Icon(Data.neverPlay == true ?
+                    Icons.play_circle_outline :
                     Icons.pause_circle_outline),
                     iconSize: 28,
                     color: Colors.white,
                     onPressed: (){
                       setState(() {
-                        if(Data.play == true){
+                        if(Data.neverPlay == false){
                           audioPlayer.pause();
-                          Data.play = false;
+                          Data.neverPlay = true;
                         }else{
                           audioPlayer.resume();
-                          Data.play = true;
+                          Data.neverPlay = false;
                         }
                       });
                     },

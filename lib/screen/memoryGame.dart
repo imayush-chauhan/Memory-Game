@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:memory/data/data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,6 +17,8 @@ class _MemoryState extends State<Memory> {
   bool show = true;
   bool choose = false;
   bool restartG = false;
+  bool isLoaded = false;
+  bool isLoadedIn = false;
   int i;
   int ab = 2;
   int y;
@@ -49,12 +52,87 @@ class _MemoryState extends State<Memory> {
     super.initState();
     first();
     getHighScore();
+    if(Data.showAds == true){
+      bannerAds();
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
-    timer.cancel();
+    timer?.cancel();
+    if(Data.showAds == true){
+      _ad?.dispose();
+    }
+  }
+
+  BannerAd _ad;
+
+  bannerAds(){
+    if(isLoaded == false){
+      _ad = BannerAd(
+        adUnitId: "ca-app-pub-3028010056599796/1626317951",
+        size: AdSize.banner,
+        request: AdRequest(),
+        listener: AdListener(
+            onAdLoaded: (_){
+              setState(() {
+                isLoaded = true;
+              });
+            },
+            onAdFailedToLoad: (_ad,error){
+              print("Ad failed to load on Error: $error");
+            }
+        ),
+      );
+    }
+  }
+
+  checkForAd(){
+    if(isLoaded == true){
+      return Container(
+        child: Center(
+          child: AdWidget(
+            ad: _ad,
+          ),
+        ),
+        height: 50,
+        width: 320,
+        alignment: Alignment.center,
+      );
+    }else{
+      return Container(
+        height: 50,
+        width: 320,
+      );
+    }
+  }
+
+  InterstitialAd _in;
+
+  loadInAd(){
+    _in = InterstitialAd(
+      adUnitId: "ca-app-pub-3028010056599796/1055294705",
+      request: AdRequest(
+        keywords: ["amazon", "games", "land", "collage","toys","learn","coding"],
+      ),
+      listener: AdListener(
+          onAdLoaded: (_){
+            setState(() {
+              isLoadedIn = true;
+            });
+          },
+          onAdFailedToLoad: (_ad,error){
+          }
+      ),
+    );
+    _in.load();
+  }
+
+  showInAd(){
+    if(isLoadedIn == true){
+      _in.show();
+    }
   }
 
   setHighScore() async {
@@ -111,7 +189,6 @@ class _MemoryState extends State<Memory> {
 
 
   first(){
-
     for(int i = 1;
     Data.level == 1 ? i <= 2 :
     Data.level == 2 ? i <= 3 :
@@ -172,9 +249,9 @@ class _MemoryState extends State<Memory> {
         ) :
         Text("?",
             style: TextStyle(
-                fontSize:
-                Data.level == 1 ? 38 : 30,
-                color: Color(0xffDD2A7B).withOpacity(0.85),
+              fontSize:
+              Data.level == 1 ? 38 : 30,
+              color: Color(0xffDD2A7B).withOpacity(0.85),
             ));
     }
   }
@@ -330,6 +407,9 @@ class _MemoryState extends State<Memory> {
                       height: 50,
                       onPressed: () {
                         showWinDialog("Memory Game");
+                        if(Data.showAds == true){
+                          loadInAd();
+                        }
                         setState(() {
                           restartG = true;
                           choose = false;
@@ -415,7 +495,11 @@ class _MemoryState extends State<Memory> {
                           });
                           if(numberOfTurns == 0){
                             time();
+                            if(Data.showAds == true){
+                              _ad.load();
+                            }
                           }
+
                           if(i != index && !b.contains(a[index]) && show == true){
                             setState(() {
                               numberOfTurns++;
@@ -591,6 +675,12 @@ class _MemoryState extends State<Memory> {
                   ],
                 ),
               ),
+              Positioned(
+                bottom: 70,
+                height: 50,
+                width: 320,
+                child: checkForAd(),
+              ),
               AnimatedPositioned(
                   duration: Duration(milliseconds: 300),
                   bottom: choose == false ? 30 : -100,
@@ -643,6 +733,9 @@ class _MemoryState extends State<Memory> {
     }
 
     if(b.length >= a.length && Data.level == 5){
+      if(Data.showAds == true){
+        loadInAd();
+      }
       if(open == 0){
         if(Data.highScoreInPokemon != 0){
           if(numberOfTurns == Data.highScoreInPokemon){
@@ -815,6 +908,9 @@ class _MemoryState extends State<Memory> {
                     minWidth: 120,
                     height: 50,
                     onPressed: (){
+                      if(Data.showAds == true){
+                        showInAd();
+                      }
                       restart();
                       Navigator.of(context).pop();
                     },

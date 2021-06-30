@@ -27,11 +27,11 @@ class _HighScoreState extends State<HighScore> {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: Text("High Score",
-          style: TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 25,
               fontWeight: FontWeight.w600,
-          ),),
+            ),),
           leading: IconButton(
             color: Colors.white,
             icon: Icon(Icons.arrow_back_ios),
@@ -49,69 +49,69 @@ class _HighScoreState extends State<HighScore> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
-                  height: MediaQuery.of(context).size.height*0.21,
-                  width: MediaQuery.of(context).size.width*0.85,
-                  child: Card(
-                    margin: EdgeInsets.all(0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    elevation: 10,
-                    color: Color(0xffDD2A7B),
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          top: 20,
-                            left: 12,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Pokemon",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w600,
-                                  ),),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 4),
-                                  child: Text("${Data.highScoreInPokemon} turns in ${Data.timeInPokemon}",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 21,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                        ),
-                        Positioned(
-                          top: -35,
-                            right: -30,
-                            child: CircleAvatar(
-                              radius: 90,
-                              backgroundColor: Colors.white.withOpacity(0.12),
-                              child: CircleAvatar(
-                                radius: 70,
-                                backgroundColor: Colors.white.withOpacity(0.2),
-                                child: CircleAvatar(
-                                  radius: 52,
-                                  backgroundColor: Colors.white.withOpacity(0.18),
-                                  child: CircleAvatar(
-                                    radius: 40,
-                                    child: Image.asset("asset/images/3.png",
-                                    width: 65,),
-                                    backgroundColor: Color(0xffDD2A7B),
-                                  ),
+                height: MediaQuery.of(context).size.height*0.21,
+                width: MediaQuery.of(context).size.width*0.85,
+                child: Card(
+                  margin: EdgeInsets.all(0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  elevation: 10,
+                  color: Color(0xffDD2A7B),
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        top: 20,
+                        left: 12,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Pokemon",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w600,
+                              ),),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: Text("${Data.highScoreInPokemon} turns in ${Data.timeInPokemon}",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                      Positioned(
+                        top: -35,
+                        right: -30,
+                        child: CircleAvatar(
+                          radius: 90,
+                          backgroundColor: Colors.white.withOpacity(0.12),
+                          child: CircleAvatar(
+                            radius: 70,
+                            backgroundColor: Colors.white.withOpacity(0.2),
+                            child: CircleAvatar(
+                              radius: 52,
+                              backgroundColor: Colors.white.withOpacity(0.18),
+                              child: CircleAvatar(
+                                radius: 40,
+                                child: Image.asset("asset/images/3.png",
+                                  width: 65,),
+                                backgroundColor: Color(0xffDD2A7B),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+              ),
               Container(
                 height: MediaQuery.of(context).size.height*0.21,
                 width: MediaQuery.of(context).size.width*0.85,
@@ -165,9 +165,9 @@ class _HighScoreState extends State<HighScore> {
                               child: CircleAvatar(
                                 radius: 40,
                                 child: Text("😃",
-                                style: TextStyle(
-                                  fontSize: 45,
-                                ),),
+                                  style: TextStyle(
+                                    fontSize: 45,
+                                  ),),
                                 backgroundColor: Color(0xffDD2A7B),
                               ),
                             ),
@@ -232,11 +232,11 @@ class _HighScoreState extends State<HighScore> {
                               child: CircleAvatar(
                                 radius: 40,
                                 child: Text("7",
-                                style: TextStyle(
-                                  fontSize: 45,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600
-                                ),),
+                                  style: TextStyle(
+                                      fontSize: 45,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600
+                                  ),),
                                 backgroundColor: Color(0xffDD2A7B),
                               ),
                             ),
@@ -262,11 +262,11 @@ class _HighScoreState extends State<HighScore> {
                   ),
                   child: Center(
                     child: Text("Play",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 25
-                    ),),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 25
+                      ),),
                   ),
                 ),
               ),
