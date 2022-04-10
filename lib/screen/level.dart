@@ -459,7 +459,7 @@ class _LevelsState extends State<Levels> {
       a.add(i.toString());
       a.add(i.toString());
     }
-    a.shuffle();
+    // a.shuffle();
   }
 
   timeLeft(){
@@ -1481,7 +1481,7 @@ class _LevelsState extends State<Levels> {
                       if(widget.level == 4 || widget.level == 10 || widget.level == 15){
                         if(widget.level == 4 || widget.level == 15){
                           getRatingSharing();
-                          Future.delayed(Duration(milliseconds: 400),(){
+                          Future.delayed(Duration(milliseconds: 200),(){
                             setState(() {
                               if(Data.rate == false){
                                 rate("If you like playing our\n"
@@ -1492,7 +1492,7 @@ class _LevelsState extends State<Levels> {
                           });
                         }
                         if(widget.level == 10){
-                          Future.delayed(Duration(milliseconds: 400),(){
+                          Future.delayed(Duration(milliseconds: 200),(){
                             setState(() {
                               if(Data.share == false){
                                 share("  If you like playing,\n"

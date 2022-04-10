@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:memory/data/data.dart';
+import 'package:memory/screen/brain_jam.dart';
 import 'package:memory/screen/challenges.dart';
 import 'package:memory/screen/high%20score.dart';
 import 'package:memory/screen/memoryGame.dart';
@@ -61,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
       collection("memory").doc("1")
           .get().then((result){
         setState(() {
-          Data.showAds = result.get("showAds");
+          // Data.showAds = result.get("showAds");
         });
       });
     });
@@ -402,7 +403,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                   GestureDetector(
                     onTap: (){
                       Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return HighScore();
+                        return BrainJam();
                       },));
                     },
 
@@ -430,7 +431,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                         ),
                         elevation: 10,
                         child: Center(
-                            child: Text("High Score",
+                            child: Text("Brain Jam",
                               style: TextStyle(
                                 fontSize: 20,
                                 fontFamily: "Source",
